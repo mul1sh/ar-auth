@@ -156,10 +156,8 @@
 
 .main-panel {
   background-color: $bg-nude;
-  position: relative;
   z-index: 2;
-  float: right;
-  width: $sidebar-width;
+  width: 100%;
   min-height: 100%;
   overflow: auto;
 

@@ -8,7 +8,6 @@ import Card from "./Cards/Card.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
-import SidebarPlugin from "./SidebarPlugin/index";
 
 let components = {
   FormGroupInput,
@@ -16,8 +15,7 @@ let components = {
   ChartCard,
   StatsCard,
   PaperTable,
-  DropDown,
-  SidebarPlugin
+  DropDown
 };
 
 export default components;
@@ -29,6 +27,5 @@ export {
   StatsCard,
   PaperTable,
   DropDown,
-  Button,
-  SidebarPlugin
+  Button
 };

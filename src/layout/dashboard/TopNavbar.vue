@@ -4,8 +4,6 @@
       <a class="navbar-brand" href="#">{{routeName}}</a>
       <button class="navbar-toggler navbar-burger"
               type="button"
-              @click="toggleSidebar"
-              :aria-expanded="$sidebar.showSidebar"
               aria-label="Toggle navigation">
         <span class="navbar-toggler-bar"></span>
         <span class="navbar-toggler-bar"></span>
@@ -63,12 +61,6 @@ export default {
     },
     closeDropDown() {
       this.activeNotifications = false;
-    },
-    toggleSidebar() {
-      this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
-    },
-    hideSidebar() {
-      this.$sidebar.displaySidebar(false);
     }
   }
 };

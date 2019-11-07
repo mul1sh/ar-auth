@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'nav-open': $sidebar.showSidebar}">
+  <div>
     <notifications></notifications>
     <router-view></router-view>
   </div>
