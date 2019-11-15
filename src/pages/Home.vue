@@ -136,7 +136,7 @@
 <script>
 
 import { SelfBuildingSquareSpinner  } from 'epic-spinners'
-import { testAuth } from "@/helpers/arweave/index";
+import { testAuth, encryptAndSaveWallet  } from "@/helpers/arweave/index";
 
 export default {
   components: {
@@ -144,35 +144,40 @@ export default {
   },
   methods: {
       fileSelected(e){
-            const filereader = new FileReader();
-            filereader.addEventListener('loadend', async e => {
-                try {
-                    const userWallet = await JSON.parse(e.target.result);
+        const filereader = new FileReader();
 
-                    console.log(userWallet);
-                    /*const userArweaveAddress = await getWalletAddress(userWallet);
-                    let userArweaveBalance = '';
-                    if (userArweaveAddress) {
-                        // first of all get the user's details/info
-                        const username = await this.getUserInfo(userArweaveAddress);
-                        userArweaveBalance = await getWalletBalance(userArweaveAddress);
-                        // save the login state locally
-                        localStorage.setItem('loggedIn', true);
-                        localStorage.setItem('userArweaveAddress', userArweaveAddress);
-                        localStorage.setItem('userArweaveBalance', userArweaveBalance);
-                        localStorage.setItem('userWallet', JSON.stringify(userWallet));
-                        localStorage.setItem('userName', username);
-                        router.push({ name: 'reminders'});
-                    } else {
-                        throw new Error("Unable to get wallet address!!")
-                    }*/
-                  
-                }
-                catch(error){
-                  console.log(error);
-                }
-            });
-            filereader.readAsText(e.target.files[0]);
+        filereader.addEventListener('loadend', async e => {
+            try {
+              const userWallet = await JSON.parse(e.target.result);
+
+              if (userWallet) {
+                 await encryptAndSaveWallet(userWallet);
+              }
+
+             // console.log(userWallet);
+              /*const userArweaveAddress = await getWalletAddress(userWallet);
+              let userArweaveBalance = '';
+              if (userArweaveAddress) {
+                  // first of all get the user's details/info
+                  const username = await this.getUserInfo(userArweaveAddress);
+                  userArweaveBalance = await getWalletBalance(userArweaveAddress);
+                  // save the login state locally
+                  localStorage.setItem('loggedIn', true);
+                  localStorage.setItem('userArweaveAddress', userArweaveAddress);
+                  localStorage.setItem('userArweaveBalance', userArweaveBalance);
+                  localStorage.setItem('userWallet', JSON.stringify(userWallet));
+                  localStorage.setItem('userName', username);
+                  router.push({ name: 'reminders'});
+              } else {
+                  throw new Error("Unable to get wallet address!!")
+              }*/
+              
+            }
+            catch(error){
+              console.log(error);
+            }
+        });
+        filereader.readAsText(e.target.files[0]);
       },
   },
   data() {
@@ -192,7 +197,7 @@ export default {
     };
   },
   mounted() {
-    console.log(testAuth());
+   // console.log(testAuth());
 
   }
 };

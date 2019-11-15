@@ -150,3 +150,61 @@ export const testAuth = async () => {
 
 	//parseInt("10", 16);
 }
+
+// function generates a jwk key to encypt the users wallet
+const encryptUserWallet = async (userWallet) => {
+
+	try {
+
+		console.log(userWallet);
+
+		const stringifiedUserWallet = JSON.stringify(userWallet);
+
+		const mnemonic = bip39.generateMnemonic(128);
+
+	    console.log(mnemonic);
+
+	    const encryptedWallet = CryptoJS.AES.encrypt(stringifiedUserWallet, mnemonic);
+        console.log(typeof encryptedWallet);
+
+         console.log(encryptedWallet);
+
+        const decryptedWallet = CryptoJS.AES.decrypt(encryptedWallet, mnemonic);
+        console.log(decryptedWallet);
+
+        const decryptedWalletString = decryptedWallet.toString(CryptoJS.enc.Utf8);
+        console.log(decryptedWalletString);
+
+	}
+
+	catch (error) {
+		console.log(error);
+	}
+
+	
+
+}
+
+export const encryptAndSaveWallet = async (userWallet) => {
+
+	let walletSaved = false;
+
+	try {
+	   const encryptedWallet = encryptUserWallet(userWallet);
+
+       //let transaction = await arweave.createTransaction({ data: data.encryptedWallet}, userWallet);
+	   //transaction.addTag('app-id', 'ar-auth');
+
+	  // await arweave.transactions.sign(transaction, userWallet);
+
+	  // const response = await arweave.transactions.post(transaction);
+      // walletSaved = response.status === 200 ? true : false;
+	}
+	catch (error) {
+		console.error(error);
+		console.error("unable to save wallet");
+	}
+	
+	return walletSaved;
+
+}
