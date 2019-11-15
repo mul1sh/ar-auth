@@ -9,7 +9,7 @@
               To get your unique <strong>arweave login phrase</strong>, simply upload your arweave wallet below. 
             </p>
             <p>
-              Once the wallet has been <strong>safely stored and encrypted in the arweave blockchain</strong>, the phrase will be displayed to you :).
+              Once the wallet has been <strong>encrypted and safely stored in the arweave blockchain</strong>, the phrase will be shown to you :).
             </p>
             <div class="text-center" v-if="!savingWallet && !walletUploaded">
                 <p-button type="info"
@@ -47,7 +47,7 @@
               After 10 minutes, you can also test your arweave phrase in this <a href="https://mzmkosumzfki.arweave.net/yfJoevh4fa8-Kd-L4GGz9VdG88jdeHGl_IGJol7CKkY" target="_blank">permaweb dApp</a> and confirm that it works 😃  
             </p>
             <p class="wallet-warn">
-              Finally, please copy or write down the above phrase & save it securely. If it gets lost, it <strong class="wallet-warn">can't be recovered</strong> and if hacker or malicious users get hold of it they <strong class="wallet-warn">will be able </strong>  to access your arweave account and transfer your AR tokens.
+              Finally, please copy or write down the above phrase & save it securely. If it gets lost, it <strong class="wallet-warn">can't be recovered</strong> and if hacker or malicious users get hold of it, they <strong class="wallet-warn">will be able </strong>  to access your arweave account and transfer your AR tokens.
             </p>
             <div class="text-center">
                 <p-button type="info"
@@ -140,10 +140,6 @@ export default {
       passPhrase: "",
       txLink: ""
     };
-  },
-  mounted() {
-   // console.log(testAuth());
-
   }
 };
 </script>
