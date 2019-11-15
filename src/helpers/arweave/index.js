@@ -1,6 +1,8 @@
 import Arweave from 'arweave/web';
 import * as bip39 from 'bip39';
 
+var util = require('util')
+
 const arweaveOptions = {
     host: 'arweave.net',// Hostname or IP address for a Arweave node
     port: 443,           // Port, defaults to 1984
@@ -12,44 +14,22 @@ const arweaveOptions = {
 const arweave = Arweave.init(arweaveOptions);
 
 
-export const getWalletAddress = async (wallet) => {
-    let arweaveAddress = undefined;
-
-	try {
-      arweaveAddress = await arweave.wallets.jwkToAddress(wallet);
-	}
-	catch(error) {
-      console.log("unable to get wallet address");
-	}
-
-	return arweaveAddress;
-}
-
-export const getWalletBalance = async (walletAddress) => {
-    let arweaveBalance = undefined;
-
-	try {
-      const balance = await arweave.wallets.getBalance(walletAddress);
-
-      if (balance) {
-      	arweaveBalance = arweave.ar.winstonToAr(balance);
-      }
-	}
-	catch(error) {
-      console.log("unable to get wallet balance");
-	}
-
-	return arweaveBalance;
-}
-
-export const getWalletTransactions = async (walletAddress) => {
+export const getEncryptedWallet = async (publicKey) => {
     let arweaveTransactions = [];
 
 	try {
       arweaveTransactions = await arweave.arql({
-		    op: "equals",
-		    expr1: "from",
-		    expr2: walletAddress
+		      op: "and",
+			  expr1: {
+			    op: "equals",
+			    expr1: "ar-auth-public-key",
+			    expr2: publicKey
+			  },
+			  expr2: {
+			    op: "equals",
+			    expr1: "app-id",
+			    expr2: "ar-auth"
+			  }
 		});
 	}
 	catch(error) {
@@ -73,136 +53,62 @@ export const getTransactionDetails = async (transactionId) => {
 	return transactionDetails;
 }
 
-export const saveWallet = async (userWallet, data) => {
-	let walletSaved = false;
-
-	try {
-       let transaction = await arweave.createTransaction({ data: data.encryptedWallet}, userWallet);
-	   transaction.addTag('app-id', 'ar-auth');
-
-	   await arweave.transactions.sign(transaction, userWallet);
-
-	   const response = await arweave.transactions.post(transaction);
-       walletSaved = response.status === 200 ? true : false;
-	}
-	catch (error) {
-		console.error(error);
-		console.error("unable to save wallet");
-	}
-	
-	return walletSaved;
-}
-
-export const getUserWallet = async (walletAddress) => {
-	let userWallet = {};
-
-	try {
-        userWallet = await arweave.arql({
-		      op: "and",
-			  expr1: {
-			    op: "equals",
-			    expr1: "from",
-			    expr2: walletAddress
-			  },
-			  expr2: {
-			    op: "equals",
-			    expr1: "app-id",
-			    expr2: "ar-auth"
-			  }
-		});
-  
-	}
-	catch(error) {
-	  console.log(error);
-      console.log("unable to get user wallet");
-	}
-
-	return userWallet;
-}
-
-async function generate_random_bytes (length) {
-    var array = new Uint8Array(length)
-    window.crypto.getRandomValues(array)
-
-    return array
-}
-
-export const testAuth = async () => {
-	//console.log(arweave.crypto.decrypt);
-
-	const mnemonic = bip39.generateMnemonic();
-
-	console.log(mnemonic);
-
-	let sentence = "";
-
-	mnemonic.split(" ").forEach((word, index) => {
-        if (index <= 3) {
-           sentence += word;
-        }
-	});
-
-	console.log(typeof sentence);
-
-	console.log(sentence);
-
-	console.log(btoa(sentence));
-
-	//parseInt("10", 16);
-}
 
 // function generates a jwk key to encypt the users wallet
 const encryptUserWallet = async (userWallet) => {
 
+	let encryptionData = {};
+
 	try {
-
-		console.log(userWallet);
-
-		const stringifiedUserWallet = JSON.stringify(userWallet);
-
 		const mnemonic = bip39.generateMnemonic(128);
 
-	    console.log(mnemonic);
+		encryptionData.phrase = mnemonic;
 
-	    const encryptedWallet = CryptoJS.AES.encrypt(stringifiedUserWallet, mnemonic);
-        console.log(typeof encryptedWallet);
+		console.log(bip39.generateMnemonic(128));
 
-         console.log(encryptedWallet);
-
-        const decryptedWallet = CryptoJS.AES.decrypt(encryptedWallet, mnemonic);
-        console.log(decryptedWallet);
-
-        const decryptedWalletString = decryptedWallet.toString(CryptoJS.enc.Utf8);
-        console.log(decryptedWalletString);
-
+		let publicKey = "";
+		mnemonic.split(" ").forEach((word, index) => {
+	        if (index <= 3) {
+	           publicKey += word;
+	        }
+		});
+		encryptionData.publicKey = btoa(publicKey);
+	    const encryptedWallet = CryptoJS.AES.encrypt(JSON.stringify(userWallet), mnemonic).toString();
+	    encryptionData.encryptedWallet = encryptedWallet;
 	}
 
 	catch (error) {
 		console.log(error);
 	}
 
-	
-
+	return encryptionData;
 }
 
-export const encryptAndSaveWallet = async (userWallet) => {
+export const saveWallet = async (userWallet) => {
 
-	let walletSaved = false;
+	let walletSaved = {};
 
 	try {
-	   const encryptedWallet = encryptUserWallet(userWallet);
+	   const { encryptedWallet, publicKey, phrase } = await encryptUserWallet(userWallet);
+	   
+       let transaction = await arweave.createTransaction({ data: encryptedWallet }, userWallet);
 
-       //let transaction = await arweave.createTransaction({ data: data.encryptedWallet}, userWallet);
-	   //transaction.addTag('app-id', 'ar-auth');
+       walletSaved.phrase = phrase;
 
-	  // await arweave.transactions.sign(transaction, userWallet);
+       transaction.addTag('ar-auth-public-key', publicKey);
+	   transaction.addTag('app-id', 'ar-auth');
 
-	  // const response = await arweave.transactions.post(transaction);
-      // walletSaved = response.status === 200 ? true : false;
+	   await arweave.transactions.sign(transaction, userWallet);
+
+	   const response = await arweave.transactions.post(transaction);
+	   walletSaved.tx = response.status === 200 ? response.config.data : null;
+       
 	}
 	catch (error) {
 		console.error(error);
 		console.error("unable to save wallet");
+
+		walletSaved = undefined;
 	}
 	
 	return walletSaved;

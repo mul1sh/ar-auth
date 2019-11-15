@@ -4,21 +4,54 @@
 
       <div class="col-md-6 col-12">
         <card class="card" title="For Users">
-          <div v-if="!savingWallet">
+          <div v-if="!walletUploaded">
             <p>
               To get your unique <strong>arweave login phrase</strong>, simply upload your arweave wallet below. 
             </p>
             <p>
               Once the wallet has been <strong>safely stored and encrypted in the arweave blockchain</strong>, the phrase will be displayed to you :).
             </p>
-            <div class="text-center">
+            <div class="text-center" v-if="!savingWallet && !walletUploaded">
                 <p-button type="info"
                           round
                           @click.native.prevent="$refs.file.click()">
                   Upload Arweave Wallet
                 </p-button>
+                <input type="file" ref="file" style="display: none" @change="fileSelected"/>
             </div>
-            <input type="file" ref="file" style="display: none" @change="fileSelected"/>
+          
+            <div class="saving-wallet w-100" v-if="savingWallet">
+              
+              <span>Encrypting & Saving Arweave Wallet</span> &nbsp; &nbsp;
+              <self-building-square-spinner
+                :animation-duration="6000"
+                :size="60"
+                color="#ff1d5e"
+              />
+            </div>
+          </div>
+          <div v-if="walletUploaded">
+            <p>
+              Awesome 😃, your <strong>arweave pass phrase </strong> is, 
+              <h2>
+                {{ passPhrase }}
+              </h2>
+            </p>
+            <p>
+              Your wallet has been encrypted successfully and is being mined. Please give it <strong>atmost 10 minutes</strong> to finish mining on the arweave blockchain
+            </p>
+            <p class="wallet-warn">
+              Also please copy or write down the above phrase & save it securely. If it gets lost, it <strong class="wallet-warn">can't be recovered</strong> and if hacker or malicious users get hold of it they <strong class="wallet-warn">will be able </strong>  to access your arweave account and transfer your AR tokens.
+            </p>
+            <div class="text-center">
+                <p-button type="info"
+                          round
+                          @click.native.prevent="closeInfo">
+                  Ok, Got It
+                </p-button>
+            </div>
+           
+     
           </div>
         </card>
       </div>
@@ -26,105 +59,16 @@
       <div class="col-md-6 col-12">
         <card class="card" title="For Developers">
           <div>
-            <form @submit.prevent>
-              <div class="row">
-                <div class="col-md-5">
-                  <fg-input type="text"
-                            label="Company"
-                            :disabled="true"
-                            placeholder="Paper dashboard"
-                            v-model="user.company">
-                  </fg-input>
-                </div>
-                <div class="col-md-3">
-
-                  <fg-input type="text"
-                            label="Username"
-                            placeholder="Username"
-                            v-model="user.username">
-                  </fg-input>
-                </div>
-                <div class="col-md-4">
-                  <fg-input type="email"
-                            label="Username"
-                            placeholder="Email"
-                            v-model="user.email">
-                  </fg-input>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <fg-input type="text"
-                            label="First Name"
-                            placeholder="First Name"
-                            v-model="user.firstName">
-                  </fg-input>
-                </div>
-                <div class="col-md-6">
-                  <fg-input type="text"
-                            label="Last Name"
-                            placeholder="Last Name"
-                            v-model="user.lastName">
-                  </fg-input>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-12">
-                  <fg-input type="text"
-                            label="Address"
-                            placeholder="Home Address"
-                            v-model="user.address">
-                  </fg-input>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-4">
-                  <fg-input type="text"
-                            label="City"
-                            placeholder="City"
-                            v-model="user.city">
-                  </fg-input>
-                </div>
-                <div class="col-md-4">
-                  <fg-input type="text"
-                            label="Country"
-                            placeholder="Country"
-                            v-model="user.country">
-                  </fg-input>
-                </div>
-                <div class="col-md-4">
-                  <fg-input type="number"
-                            label="Postal Code"
-                            placeholder="ZIP Code"
-                            v-model="user.postalCode">
-                  </fg-input>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label>About Me</label>
-                    <textarea rows="5" class="form-control border-input"
-                              placeholder="Here can be your description"
-                              v-model="user.aboutMe">
-
-                    </textarea>
-                  </div>
-                </div>
-              </div>
-              <div class="text-center">
-                <p-button type="info"
-                          round
-                          @click.native.prevent="updateProfile">
-                  Update Profile
-                </p-button>
-              </div>
-              <div class="clearfix"></div>
-            </form>
+            <p>
+              For developers, you can easily in-corporate <strong>Ar Auth</strong> into your dApp by following the simple instructions <a href="https://github.com/mul1sh/ar-auth#developers">in the repo</a>
+            </p>
+            <p>
+              In case of any issues, kindly create an issue in the repo and i'll sort it in good timing.
+            </p>
+            <p>
+              Last but not least, this dApp will constantly be undergoing improvements, so expect breaking changes.
+            </p>
+            
           </div>
         </card>
       </div>
@@ -136,42 +80,38 @@
 <script>
 
 import { SelfBuildingSquareSpinner  } from 'epic-spinners'
-import { testAuth, encryptAndSaveWallet  } from "@/helpers/arweave/index";
+import { saveWallet, getTransactionDetails, getEncryptedWallet  } from "@/helpers/arweave/index";
 
 export default {
   components: {
     SelfBuildingSquareSpinner
   },
   methods: {
-      fileSelected(e){
+
+      closeInfo() {
+        this.walletUploaded = false;
+      },
+      async fileSelected(e){
         const filereader = new FileReader();
+
+        const vm = this;
 
         filereader.addEventListener('loadend', async e => {
             try {
               const userWallet = await JSON.parse(e.target.result);
 
               if (userWallet) {
-                 await encryptAndSaveWallet(userWallet);
+                vm.savingWallet = true;
+                 const saved = await saveWallet(userWallet);
+
+                 if (saved) {
+                  vm.savingWallet = false;
+                  console.log(saved);
+                  vm.passPhrase = saved.phrase;
+                  vm.walletUploaded = true;
+                 }
               }
 
-             // console.log(userWallet);
-              /*const userArweaveAddress = await getWalletAddress(userWallet);
-              let userArweaveBalance = '';
-              if (userArweaveAddress) {
-                  // first of all get the user's details/info
-                  const username = await this.getUserInfo(userArweaveAddress);
-                  userArweaveBalance = await getWalletBalance(userArweaveAddress);
-                  // save the login state locally
-                  localStorage.setItem('loggedIn', true);
-                  localStorage.setItem('userArweaveAddress', userArweaveAddress);
-                  localStorage.setItem('userArweaveBalance', userArweaveBalance);
-                  localStorage.setItem('userWallet', JSON.stringify(userWallet));
-                  localStorage.setItem('userName', username);
-                  router.push({ name: 'reminders'});
-              } else {
-                  throw new Error("Unable to get wallet address!!")
-              }*/
-              
             }
             catch(error){
               console.log(error);
@@ -183,17 +123,8 @@ export default {
   data() {
     return {
       savingWallet: false,
-      user: {
-            company: "Paper Dashboard",
-            username: "michael23",
-            email: "",
-            firstName: "Chet",
-            lastName: "Faker",
-            address: "Melbourne, Australia",
-            city: "Melbourne",
-            postalCode: "",
-            aboutMe: `We must accept finite disappointment, but hold on to infinite hope.`
-          }
+      walletUploaded: false,
+      passPhrase: "",
     };
   },
   mounted() {
@@ -202,5 +133,14 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
+.saving-wallet {
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.wallet-warn {
+  color: #cc0000;
+}
 </style>
