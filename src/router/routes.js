@@ -1,21 +1,19 @@
-import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
+import MainLayout from "@/layout/dashboard/MainLayout.vue";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
-
-// Admin pages
-import Dashboard from "@/pages/Dashboard.vue";
+import Home from "@/pages/Home.vue";
 
 const routes = [
   {
     path: "/",
-    component: DashboardLayout,
-    redirect: "/dashboard",
+    component: MainLayout,
+    redirect: "/home",
     children: [
       {
-        path: "dashboard",
-        name: "dashboard",
-        component: Dashboard
-      }
+        path: "home",
+        name: "home",
+        component: Home
+      },
     ]
   },
   { path: "*", component: NotFound }

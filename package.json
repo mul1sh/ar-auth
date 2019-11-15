@@ -15,6 +15,7 @@
     "bip39": "^3.0.2",
     "bootstrap": "^4.3.1",
     "chartist": "^0.11.0",
+    "crypto-js": "^3.1.9-1",
     "es6-promise": "^4.2.4",
     "vue": "^2.6.10",
     "vue-clickaway": "^2.1.0",

@@ -1,4 +1,5 @@
 import Arweave from 'arweave/web';
+import * as bip39 from 'bip39';
 
 const arweaveOptions = {
     host: 'arweave.net',// Hostname or IP address for a Arweave node
@@ -72,12 +73,11 @@ export const getTransactionDetails = async (transactionId) => {
 	return transactionDetails;
 }
 
-export const saveWallet = async(userWallet, data) => {
+export const saveWallet = async (userWallet, data) => {
 	let walletSaved = false;
 
 	try {
        let transaction = await arweave.createTransaction({ data: data.encryptedWallet}, userWallet);
-	   transaction.addTag('ar-auth-wallet-date-added', data.dateAdded);
 	   transaction.addTag('app-id', 'ar-auth');
 
 	   await arweave.transactions.sign(transaction, userWallet);
@@ -118,4 +118,35 @@ export const getUserWallet = async (walletAddress) => {
 	}
 
 	return userWallet;
+}
+
+async function generate_random_bytes (length) {
+    var array = new Uint8Array(length)
+    window.crypto.getRandomValues(array)
+
+    return array
+}
+
+export const testAuth = async () => {
+	//console.log(arweave.crypto.decrypt);
+
+	const mnemonic = bip39.generateMnemonic();
+
+	console.log(mnemonic);
+
+	let sentence = "";
+
+	mnemonic.split(" ").forEach((word, index) => {
+        if (index <= 3) {
+           sentence += word;
+        }
+	});
+
+	console.log(typeof sentence);
+
+	console.log(sentence);
+
+	console.log(btoa(sentence));
+
+	//parseInt("10", 16);
 }
