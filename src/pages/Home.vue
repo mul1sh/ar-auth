@@ -1,39 +1,132 @@
 <template>
   <div>
-
-  
-    <!--Charts-->
     <div class="row">
 
-    
       <div class="col-md-6 col-12">
-        <chart-card title="For Users"
-                    sub-title="Last campaign performance"
-                    :chart-data="preferencesChart.data"
-                    chart-type="Pie">
-          <span slot="footer">
-            <i class="ti-timer"></i> Campaign set 2 days ago</span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Bounce
-            <i class="fa fa-circle text-warning"></i> Unsubscribe
+        <card class="card" title="For Users">
+          <div v-if="!savingWallet">
+            <p>
+              To get your unique <strong>arweave login phrase</strong>, simply upload your arweave wallet below. 
+            </p>
+            <p>
+              Once the wallet has been <strong>safely stored and encrypted in the arweave blockchain</strong>, the phrase will be displayed to you :).
+            </p>
+            <div class="text-center">
+                <p-button type="info"
+                          round
+                          @click.native.prevent="$refs.file.click()">
+                  Upload Arweave Wallet
+                </p-button>
+            </div>
+            <input type="file" ref="file" style="display: none" @change="fileSelected"/>
           </div>
-        </chart-card>
+        </card>
       </div>
 
       <div class="col-md-6 col-12">
-        <chart-card title="For Developers"
-                    sub-title="All products including Taxes"
-                    :chart-data="activityChart.data"
-                    :chart-options="activityChart.options">
-          <span slot="footer">
-            <i class="ti-check"></i> Data information certified
-          </span>
-          <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Tesla Model S
-            <i class="fa fa-circle text-warning"></i> BMW 5 Series
+        <card class="card" title="For Developers">
+          <div>
+            <form @submit.prevent>
+              <div class="row">
+                <div class="col-md-5">
+                  <fg-input type="text"
+                            label="Company"
+                            :disabled="true"
+                            placeholder="Paper dashboard"
+                            v-model="user.company">
+                  </fg-input>
+                </div>
+                <div class="col-md-3">
+
+                  <fg-input type="text"
+                            label="Username"
+                            placeholder="Username"
+                            v-model="user.username">
+                  </fg-input>
+                </div>
+                <div class="col-md-4">
+                  <fg-input type="email"
+                            label="Username"
+                            placeholder="Email"
+                            v-model="user.email">
+                  </fg-input>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <fg-input type="text"
+                            label="First Name"
+                            placeholder="First Name"
+                            v-model="user.firstName">
+                  </fg-input>
+                </div>
+                <div class="col-md-6">
+                  <fg-input type="text"
+                            label="Last Name"
+                            placeholder="Last Name"
+                            v-model="user.lastName">
+                  </fg-input>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <fg-input type="text"
+                            label="Address"
+                            placeholder="Home Address"
+                            v-model="user.address">
+                  </fg-input>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <fg-input type="text"
+                            label="City"
+                            placeholder="City"
+                            v-model="user.city">
+                  </fg-input>
+                </div>
+                <div class="col-md-4">
+                  <fg-input type="text"
+                            label="Country"
+                            placeholder="Country"
+                            v-model="user.country">
+                  </fg-input>
+                </div>
+                <div class="col-md-4">
+                  <fg-input type="number"
+                            label="Postal Code"
+                            placeholder="ZIP Code"
+                            v-model="user.postalCode">
+                  </fg-input>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>About Me</label>
+                    <textarea rows="5" class="form-control border-input"
+                              placeholder="Here can be your description"
+                              v-model="user.aboutMe">
+
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <p-button type="info"
+                          round
+                          @click.native.prevent="updateProfile">
+                  Update Profile
+                </p-button>
+              </div>
+              <div class="clearfix"></div>
+            </form>
           </div>
-        </chart-card>
+        </card>
       </div>
 
     </div>
@@ -42,94 +135,65 @@
 </template>
 <script>
 
-import { StatsCard, ChartCard, Button } from "@/components/index";
-import Chartist from 'chartist';
-import {testAuth } from "@/helpers/arweave/index";
+import { SelfBuildingSquareSpinner  } from 'epic-spinners'
+import { testAuth } from "@/helpers/arweave/index";
 
 export default {
   components: {
-    StatsCard,
-    ChartCard,
-    Button
+    SelfBuildingSquareSpinner
   },
-  /**
-   * Chart data used to render stats, charts. Should be replaced with server data
-   */
+  methods: {
+      fileSelected(e){
+            const filereader = new FileReader();
+            filereader.addEventListener('loadend', async e => {
+                try {
+                    const userWallet = await JSON.parse(e.target.result);
+
+                    console.log(userWallet);
+                    /*const userArweaveAddress = await getWalletAddress(userWallet);
+                    let userArweaveBalance = '';
+                    if (userArweaveAddress) {
+                        // first of all get the user's details/info
+                        const username = await this.getUserInfo(userArweaveAddress);
+                        userArweaveBalance = await getWalletBalance(userArweaveAddress);
+                        // save the login state locally
+                        localStorage.setItem('loggedIn', true);
+                        localStorage.setItem('userArweaveAddress', userArweaveAddress);
+                        localStorage.setItem('userArweaveBalance', userArweaveBalance);
+                        localStorage.setItem('userWallet', JSON.stringify(userWallet));
+                        localStorage.setItem('userName', username);
+                        router.push({ name: 'reminders'});
+                    } else {
+                        throw new Error("Unable to get wallet address!!")
+                    }*/
+                  
+                }
+                catch(error){
+                  console.log(error);
+                }
+            });
+            filereader.readAsText(e.target.files[0]);
+      },
+  },
   data() {
     return {
-      usersChart: {
-        data: {
-          labels: [
-            "9:00AM",
-            "12:00AM",
-            "3:00PM",
-            "6:00PM",
-            "9:00PM",
-            "12:00PM",
-            "3:00AM",
-            "6:00AM"
-          ],
-          series: [
-            [287, 385, 490, 562, 594, 626, 698, 895, 952],
-            [67, 152, 193, 240, 387, 435, 535, 642, 744],
-            [23, 113, 67, 108, 190, 239, 307, 410, 410]
-          ]
-        },
-        options: {
-          low: 0,
-          high: 1000,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3
-          }),
-          showLine: true,
-          showPoint: false
-        }
-      },
-      activityChart: {
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "Mai",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-          ],
-          series: [
-            [542, 543, 520, 680, 653, 753, 326, 434, 568, 610, 756, 895],
-            [230, 293, 380, 480, 503, 553, 600, 664, 698, 710, 736, 795]
-          ]
-        },
-        options: {
-          seriesBarDistance: 10,
-          axisX: {
-            showGrid: false
-          },
-          height: "245px"
-        }
-      },
-      preferencesChart: {
-        data: {
-          labels: ["62%", "32%", "6%"],
-          series: [62, 32, 6]
-        },
-        options: {}
-      }
+      savingWallet: false,
+      user: {
+            company: "Paper Dashboard",
+            username: "michael23",
+            email: "",
+            firstName: "Chet",
+            lastName: "Faker",
+            address: "Melbourne, Australia",
+            city: "Melbourne",
+            postalCode: "",
+            aboutMe: `We must accept finite disappointment, but hold on to infinite hope.`
+          }
     };
   },
   mounted() {
     console.log(testAuth());
+
   }
 };
 </script>

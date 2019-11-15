@@ -7,10 +7,10 @@ const routes = [
   {
     path: "/",
     component: MainLayout,
-    redirect: "/home",
+    redirect: "/auth",
     children: [
       {
-        path: "home",
+        path: "auth",
         name: "home",
         component: Home
       },
