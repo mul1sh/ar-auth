@@ -8,11 +8,11 @@ Check the [Live Demo here](https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU
 To be enable to add the `Ar Auth` functionality into your permaweb app, simpl do the following.
 
 1. Add [arweave-js](https://github.com/ArweaveTeam/arweave-js) into your project, as described in the repo.
-2. Add the `crypto.js` js dependency as a script tag. i.e.
+2. Add the `crypto.js`  dependency as a script tag, into your project. i.e.
 ```html
 <script src="https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU5EzW9ZnizLEVA6qHyAmJQSU/js/crypto.js"></script>
 ```
-3. Get the arweave login phrase from the user on login i.e. via an `<input/>` tag. This phrase has to be a 12 word [bip39 phrase](https://github.com/bitcoinjs/bip39) otherwise the login will fail.
+3. Get the arweave login phrase from the user on login i.e. via an `<input/>` tag. This phrase has to be a valid 12 word [bip39 phrase](https://github.com/bitcoinjs/bip39) otherwise the decryption will fail.
 4. Create a public key from the phrase, using the first 4 words of the phrase and then encode it in base64 i.e.
 ```js
 let publicKey = "";
@@ -47,7 +47,7 @@ catch(error) {
 
 6. Finally [get the details of the transaction](https://github.com/mul1sh/weave-reminders/blob/master/src/views/Login.vue#L95) returned above and then decrypt it to get the wallet details.
 
-```
+```js
 const data = tx.get('data', {decode: true, string: true});
 const encryptedWallet = CryptoJS.AES.decrypt(data, mnemonic);
 const stringWallet = encryptedWallet.toString(CryptoJS.enc.Utf8);
