@@ -64,8 +64,6 @@ const encryptUserWallet = async (userWallet) => {
 
 		encryptionData.phrase = mnemonic;
 
-		console.log(bip39.generateMnemonic(128));
-
 		let publicKey = "";
 		mnemonic.split(" ").forEach((word, index) => {
 	        if (index <= 3) {

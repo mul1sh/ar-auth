@@ -40,8 +40,14 @@
             <p>
               Your wallet has been encrypted successfully and is being mined. Please give it <strong>atmost 10 minutes</strong> to finish mining on the arweave blockchain
             </p>
+            <p>
+              You can also view the status of the deployment transaction <a :href="txLink" target="_blank">here</a> and know when its ready.
+            </p>
+            <p>
+              After 10 minutes, you can also test your arweave phrase in this <a href="https://mzmkosumzfki.arweave.net/yfJoevh4fa8-Kd-L4GGz9VdG88jdeHGl_IGJol7CKkY" target="_blank">permaweb dApp</a> and confirm that it works 😃  
+            </p>
             <p class="wallet-warn">
-              Also please copy or write down the above phrase & save it securely. If it gets lost, it <strong class="wallet-warn">can't be recovered</strong> and if hacker or malicious users get hold of it they <strong class="wallet-warn">will be able </strong>  to access your arweave account and transfer your AR tokens.
+              Finally, please copy or write down the above phrase & save it securely. If it gets lost, it <strong class="wallet-warn">can't be recovered</strong> and if hacker or malicious users get hold of it they <strong class="wallet-warn">will be able </strong>  to access your arweave account and transfer your AR tokens.
             </p>
             <div class="text-center">
                 <p-button type="info"
@@ -60,7 +66,7 @@
         <card class="card" title="For Developers">
           <div>
             <p>
-              For developers, you can easily in-corporate <strong>Ar Auth</strong> into your dApp by following the simple instructions <a href="https://github.com/mul1sh/ar-auth#developers">in the repo</a>
+              For developers, you can easily in-corporate <strong>Ar Auth</strong> into your dApp by following the simple instructions <a href="https://github.com/mul1sh/ar-auth#developers">shown here</a>
             </p>
             <p>
               In case of any issues, kindly create an issue in the repo and i'll sort it in good timing.
@@ -106,9 +112,16 @@ export default {
 
                  if (saved) {
                   vm.savingWallet = false;
-                  console.log(saved);
+                 
                   vm.passPhrase = saved.phrase;
                   vm.walletUploaded = true;
+                  const tx = saved.tx;
+                 
+
+                  const txId = JSON.parse(tx).id;
+                 
+
+                  vm.txLink = "https://viewblock.io/arweave/tx/" + txId;
                  }
               }
 
@@ -125,6 +138,7 @@ export default {
       savingWallet: false,
       walletUploaded: false,
       passPhrase: "",
+      txLink: ""
     };
   },
   mounted() {

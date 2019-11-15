@@ -18,19 +18,46 @@
     "crypto-js": "^3.1.9-1",
     "epic-spinners": "^1.1.0",
     "es6-promise": "^4.2.4",
-    "vue": "^2.6.10",
+    "vue": "2.6.6",
     "vue-clickaway": "^2.1.0",
     "vue-notifyjs": "^0.3.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.10.0",
-    "@vue/cli-plugin-eslint": "^3.10.0",
-    "@vue/cli-service": "^3.10.0",
-    "@vue/eslint-config-prettier": "^5.0.0",
-    "node-sass": "^4.8.3",
-    "sass-loader": "^6.0.7",
-    "vue-template-compiler": "^2.6.10"
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@vue/cli-plugin-babel": "^3.5.0",
+    "@vue/cli-plugin-eslint": "^3.5.0",
+    "@vue/cli-plugin-pwa": "^3.5.0",
+    "@vue/cli-service": "^3.5.0",
+    "babel-eslint": "^10.0.1",
+    "base64-inline-loader": "^1.1.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "html-webpack-inline-source-plugin": "^0.0.10",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^1.0.0",
+    "vue-template-compiler": "2.6.6"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
   },
   "engines": {
     "node": ">= 8.1.4",
