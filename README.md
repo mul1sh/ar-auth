@@ -5,7 +5,7 @@ This is a permaweb app hosted on the arweave blockchain that allows arweave to s
 Check the [Live Demo here](https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU5EzW9ZnizLEVA6qHyAmJQSU).
 
 ## Developers
-To be enable to add the `Ar Auth` functionality into your permaweb app, simpl do the following.
+To be enable to add the `Ar Auth` functionality into your permaweb app, simply do the following.
 
 1. Add [arweave-js](https://github.com/ArweaveTeam/arweave-js) into your project, as described in the repo.
 2. Add the `crypto.js`  [dependency](https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU5EzW9ZnizLEVA6qHyAmJQSU/js/crypto.js) as a script tag, into your project. i.e.
