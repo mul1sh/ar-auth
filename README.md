@@ -25,7 +25,6 @@ publicKey = btoa(publicKey);
 ```
 5. Use the public key above and do an [ARQL query](https://github.com/mul1sh/weave-reminders/blob/master/src/helpers/arweave/index.js#L18) to get the encrypted wallet.
 ```js
-try {
   arweaveTransactions = await arweave.arql({
 	      op: "and",
 		  expr1: {
@@ -39,10 +38,7 @@ try {
 		    expr2: "ar-auth"
 		  }
 	});
-}
-catch(error) {
-  console.log("unable to get wallet transactions");
-}
+
 ```
 
 6. Finally [get the details of the transaction](https://github.com/mul1sh/weave-reminders/blob/master/src/views/Login.vue#L95) returned above and then decrypt it to get the wallet details.
@@ -56,6 +52,8 @@ const userWallet = JSON.parse(stringWallet);
 7. Use the wallet as required :)
 
 ## Use Cases
+
+The most obvious use case for this functionality is in mobile as it will allow users to target mobile platforms without having to worry about the current quirks of reading the respective filesystems. This in turn will 
 
 ## Future Changes
 
