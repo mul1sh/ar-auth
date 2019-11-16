@@ -1,11 +1,11 @@
 # AR AUTH
 
-This is a permaweb app hosted on the arweave blockchain that allows arweave to safely store their wallets in the blockchain. In exchange for this, they get an arweave phrase which they can use for login purposes for supported permaweb apps.
+Ar Auth is a permaweb app hosted on the arweave blockchain that allows arweave users to safely store their wallets in the blockchain. In exchange for this, they get an arweave phrase which they can use for login purposes for supported permaweb apps.
 
 Check the [Live Demo here](https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU5EzW9ZnizLEVA6qHyAmJQSU).
 
 ## Developers
-To be enable to add the `Ar Auth` functionality into your permaweb app, simply do the following.
+To be enable the `Ar Auth` functionality in your permaweb app, simply do the following.
 
 1. Add [arweave-js](https://github.com/ArweaveTeam/arweave-js) into your project, as described in the repo.
 2. Add the `crypto.js`  [dependency](https://f5hpy3qbh2ju.arweave.net/YIZY14pTrbl42h-txRSU5EzW9ZnizLEVA6qHyAmJQSU/js/crypto.js) as a script tag, into your project. i.e.
@@ -16,7 +16,8 @@ To be enable to add the `Ar Auth` functionality into your permaweb app, simply d
 4. Create a public key from the phrase, using the first 4 words of the phrase and then encode it in base64 i.e.
 ```js
 let publicKey = "";
- mnemonic.split(" ").forEach((word, index) => {
+
+mnemonic.split(" ").forEach((word, index) => {
     if (index <= 3) {
        publicKey += word;
     }
@@ -53,7 +54,7 @@ const userWallet = JSON.parse(stringWallet);
 
 ## Use Cases
 
-The most obvious use case for this functionality is in mobile as it will allow users to target mobile platforms without having to worry about the current quirks of reading the respective filesystems. This in turn will 
+The most obvious use case for this functionality is in mobile as it will allow users to target all the mobile platforms without having to worry about the current quirks of reading the respective filesystems. 
 
 ## Future Changes
 
